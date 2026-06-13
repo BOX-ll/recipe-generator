@@ -187,6 +187,17 @@ body {
     </div>
     <p class="font-label-md text-label-md text-on-surface-variant">点击生成随机菜单，不满意可重新生成</p>
 
+    <!-- 手机端搜索入口 -->
+    <div class="w-full max-w-md md:hidden">
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+        <input type="text" id="mobileSearchInput" placeholder="搜索食谱..." 
+          class="w-full pl-12 pr-4 py-3 rounded-full border-2 border-secondary-container bg-surface-container-lowest focus:border-primary focus:outline-none font-body-md text-body-md transition-colors"
+          oninput="mobileSearchRecipes()">
+        <button class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-accent text-white text-sm" onclick="showAllRecipes()">全部</button>
+      </div>
+    </div>
+
     <!-- Filter Tags -->
     <div class="flex gap-3 justify-center flex-wrap" id="filters">
       <button class="filter-tag active px-5 py-2.5 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setFilter('all', this)">全部</button>
@@ -280,6 +291,16 @@ let currentFilter = 'all';
 let currentRecipes = [];
 let modalFilter = 'all';
 let searchKeyword = '';
+
+// 手机端搜索
+function mobileSearchRecipes() {
+  const keyword = document.getElementById('mobileSearchInput').value.trim().toLowerCase();
+  if (!keyword) return;
+  
+  // 打开食谱大合集模态框并设置搜索关键词
+  searchKeyword = keyword;
+  showAllRecipes();
+}
 
 // 食谱大合集相关函数
 function showAllRecipes() {
