@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>今日食乜嘢 · 潮汕家常菜</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "surface-variant": "#cfe6f2",
+        "on-primary-container": "#606f78",
+        "on-primary": "#ffffff",
+        "surface-container-high": "#d5ecf8",
+        "secondary-container": "#bee1fe",
+        "inverse-on-surface": "#dff4ff",
+        "on-background": "#071e27",
+        "on-secondary-fixed": "#001e2f",
+        "primary-fixed": "#d6e5ef",
+        "surface-bright": "#f3faff",
+        "on-tertiary-container": "#34729c",
+        "on-secondary-fixed-variant": "#274a62",
+        "secondary-fixed-dim": "#a8cbe7",
+        "on-error-container": "#93000a",
+        "inverse-surface": "#1e333c",
+        "on-surface-variant": "#43474a",
+        "tertiary-container": "#e4f1ff",
+        "primary-fixed-dim": "#bac9d3",
+        "tertiary": "#21638d",
+        "on-secondary": "#ffffff",
+        "on-secondary-container": "#43647d",
+        "on-primary-fixed": "#0f1d25",
+        "secondary": "#40627b",
+        "primary-container": "#e3f2fd",
+        "surface-container-low": "#e6f6ff",
+        "on-error": "#ffffff",
+        "on-primary-fixed-variant": "#3b4951",
+        "on-tertiary-fixed-variant": "#004b71",
+        "surface-container": "#dbf1fe",
+        "tertiary-fixed": "#cbe6ff",
+        "surface-container-highest": "#cfe6f2",
+        "background": "#f3faff",
+        "surface-container-lowest": "#ffffff",
+        "inverse-primary": "#bac9d3",
+        "error-container": "#ffdad6",
+        "surface": "#f3faff",
+        "surface-tint": "#526069",
+        "outline-variant": "#c3c7cb",
+        "on-tertiary-fixed": "#001e30",
+        "on-tertiary": "#ffffff",
+        "secondary-fixed": "#c9e6ff",
+        "error": "#ba1a1a",
+        "primary": "#526069",
+        "tertiary-fixed-dim": "#93cdfc",
+        "on-surface": "#071e27",
+        "outline": "#73787b",
+        "surface-dim": "#c7dde9",
+        "accent": "#e07b39",
+        "accent-light": "#fdf0e5"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "spacing": {
+        "container-max": "1024px",
+        "margin-desktop": "40px",
+        "gutter": "24px",
+        "margin-mobile": "20px",
+        "unit": "8px"
+      },
+      "fontFamily": {
+        "body-lg": ["Plus Jakarta Sans"],
+        "headline-md": ["Playfair Display"],
+        "headline-lg": ["Playfair Display"],
+        "headline-lg-mobile": ["Playfair Display"],
+        "body-md": ["Plus Jakarta Sans"],
+        "label-md": ["Plus Jakarta Sans"]
+      },
+      "fontSize": {
+        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+        "headline-md": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+        "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}]
+      }
+    },
+  },
+}
+</script>
+<style>
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.soft-glow {
+  box-shadow: 0 0 40px rgba(191, 225, 254, 0.4);
+}
+.recipe-card-hover {
+  transition: all 0.3s ease;
+}
+.recipe-card-hover:hover {
+  background-color: #e3f2fd;
+  transform: translateY(-2px);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+.shake {
+  animation: shake 0.5s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md">
+<!-- Top Navigation Bar -->
+<header class="bg-surface dark:bg-surface-dim fixed top-0 left-0 right-0 z-50 h-16">
+  <nav class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-full">
+    <div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed flex items-center gap-2">
+      <span class="material-symbols-outlined text-[24px]">restaurant</span>
+      今日食乜嘢
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">首页</a>
+      <a class="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200 cursor-pointer" onclick="showAllRecipes()">食谱大合集</a>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center justify-center relative px-margin-mobile md:px-margin-desktop pt-24 pb-16">
+  <!-- Decorative Ambient Background -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-container rounded-full opacity-30 blur-3xl"></div>
+    <div class="absolute top-1/2 -right-48 w-[500px] h-[500px] bg-secondary-container rounded-full opacity-20 blur-3xl"></div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="relative z-10 w-full max-w-container-max flex flex-col items-center text-center space-y-10">
+    <div class="space-y-4">
+      <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface max-w-2xl mx-auto">
+        7个胖子养成记
+      </h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant">点击按钮随机生成今日菜单，感受家乡味道</p>
+    </div>
+
+    <!-- Generate Button -->
+    <div class="relative group">
+      <div class="absolute inset-0 bg-primary-container rounded-full opacity-0 group-hover:opacity-100 blur-2xl transition-all duration-700 scale-125"></div>
+      <button class="relative px-12 py-6 bg-accent text-white font-body-lg text-body-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3 soft-glow" id="genBtn" onclick="generateMenu()">
+        <span class="material-symbols-outlined text-[24px]" id="btn-icon">restaurant</span>
+        <span id="btn-text">晓珊今天吃什么</span>
+      </button>
+    </div>
+    <p class="font-label-md text-label-md text-on-surface-variant">点击生成随机菜单，不满意可重新生成</p>
+
+    <!-- Filter Tags -->
+    <div class="flex gap-3 justify-center flex-wrap" id="filters">
+      <button class="filter-tag active px-5 py-2.5 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setFilter('all', this)">全部</button>
+      <button class="filter-tag px-5 py-2.5 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setFilter('meat', this)">
+        <span class="material-symbols-outlined text-[16px] align-text-bottom">lunch_dining</span> 荤菜
+      </button>
+      <button class="filter-tag px-5 py-2.5 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setFilter('vegetable', this)">
+        <span class="material-symbols-outlined text-[16px] align-text-bottom">eco</span> 素菜
+      </button>
+      <button class="filter-tag px-5 py-2.5 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setFilter('soup', this)">
+        <span class="material-symbols-outlined text-[16px] align-text-bottom">soup_kitchen</span> 汤品
+      </button>
+    </div>
+  </div>
+
+  <!-- Results Area -->
+  <div class="w-full max-w-container-max mx-auto mt-12 px-margin-mobile md:px-margin-desktop" id="resultArea">
+    <!-- Empty State -->
+    <div class="text-center py-20">
+      <div class="inline-flex items-center justify-center w-24 h-24 bg-secondary-container rounded-full mb-6">
+        <span class="material-symbols-outlined text-[48px] text-secondary">restaurant</span>
+      </div>
+      <p class="font-body-lg text-body-lg text-on-surface-variant">点击上方按钮<br>随机生成今日菜单吧~</p>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest w-full py-10">
+  <div class="w-full px-margin-desktop max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2 font-headline-md text-headline-md text-primary">
+      <span class="material-symbols-outlined">restaurant</span>
+      今日食乜嘢
+    </div>
+    <div class="font-body-md text-body-md text-secondary dark:text-secondary-fixed text-center">
+      「食在潮汕，味在家常」
+    </div>
+  </div>
+</footer>
+
+<!-- 食谱大合集模态框 -->
+<div id="recipeModal" class="fixed inset-0 z-[100] hidden">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeRecipeModal()"></div>
+  <div class="absolute inset-4 md:inset-10 bg-surface-container-lowest rounded-2xl overflow-hidden flex flex-col">
+    <!-- 模态框头部 -->
+    <div class="bg-surface-bright border-b border-secondary-container px-6 py-4 flex items-center justify-between">
+      <h2 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+        <span class="material-symbols-outlined">menu_book</span>
+        食谱大合集
+        <span class="text-sm text-on-surface-variant font-body-md">(共 ${recipes.length} 道)</span>
+      </h2>
+      <button onclick="closeRecipeModal()" class="w-10 h-10 rounded-full bg-secondary-container hover:bg-secondary transition-colors flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary">close</span>
+      </button>
+    </div>
+    <!-- 搜索和筛选区 -->
+    <div class="bg-surface-bright px-6 py-4 border-b border-secondary-container">
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <!-- 搜索框 -->
+        <div class="relative flex-grow max-w-md">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input type="text" id="searchInput" placeholder="搜索菜名或食材..." 
+            class="w-full pl-12 pr-4 py-3 rounded-full border-2 border-secondary-container bg-surface-container-lowest focus:border-primary focus:outline-none font-body-md text-body-md transition-colors"
+            oninput="searchRecipes()">
+        </div>
+        <!-- 分类筛选 -->
+        <div class="flex gap-2 flex-wrap justify-center">
+          <button class="modal-filter-tag active px-4 py-2 rounded-full font-label-md text-label-md border border-secondary-container bg-accent text-white transition-colors duration-200" onclick="setModalFilter('all', this)">全部</button>
+          <button class="modal-filter-tag px-4 py-2 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setModalFilter('meat', this)">
+            <span class="material-symbols-outlined text-[14px] align-text-bottom">lunch_dining</span> 荤菜
+          </button>
+          <button class="modal-filter-tag px-4 py-2 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setModalFilter('vegetable', this)">
+            <span class="material-symbols-outlined text-[14px] align-text-bottom">eco</span> 素菜
+          </button>
+          <button class="modal-filter-tag px-4 py-2 rounded-full font-label-md text-label-md border border-secondary-container bg-surface-container-lowest hover:bg-secondary-container transition-colors duration-200" onclick="setModalFilter('soup', this)">
+            <span class="material-symbols-outlined text-[14px] align-text-bottom">soup_kitchen</span> 汤
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- 食谱列表 -->
+    <div id="modalRecipeList" class="flex-grow overflow-y-auto p-6">
+      <!-- 食谱卡片将通过JS渲染 -->
+    </div>
+  </div>
+</div>
+
+<script src="recipes.js"></script>
+<script>
+let currentFilter = 'all';
+let currentRecipes = [];
+let modalFilter = 'all';
+let searchKeyword = '';
+
+// 食谱大合集相关函数
+function showAllRecipes() {
+  const modal = document.getElementById('recipeModal');
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  // 更新食谱总数
+  const titleSpan = modal.querySelector('h2 span.text-sm');
+  if (titleSpan) titleSpan.textContent = `(共 ${recipes.length} 道)`;
+  renderModalRecipes();
+}
+
+function closeRecipeModal() {
+  const modal = document.getElementById('recipeModal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+function setModalFilter(type, el) {
+  modalFilter = type;
+  document.querySelectorAll('.modal-filter-tag').forEach(t => {
+    t.classList.remove('bg-accent', 'text-white', 'border-accent');
+    t.classList.add('bg-surface-container-lowest', 'border-secondary-container');
+  });
+  el.classList.remove('bg-surface-container-lowest', 'border-secondary-container');
+  el.classList.add('bg-accent', 'text-white', 'border-accent');
+  renderModalRecipes();
+}
+
+function searchRecipes() {
+  searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
+  renderModalRecipes();
+}
+
+function renderModalRecipes() {
+  const list = document.getElementById('modalRecipeList');
+  let filtered = recipes;
+  
+  // 搜索过滤
+  if (searchKeyword) {
+    filtered = filtered.filter(r => 
+      r.name.toLowerCase().includes(searchKeyword) ||
+      r.ingredients.some(ing => ing.toLowerCase().includes(searchKeyword))
+    );
+  }
+  
+  // 分类过滤
+  if (modalFilter !== 'all') {
+    filtered = filtered.filter(r => r.category === modalFilter);
+  }
+
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="text-center py-20">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-secondary-container rounded-full mb-6">
+          <span class="material-symbols-outlined text-[48px] text-secondary">search_off</span>
+        </div>
+        <p class="font-body-lg text-body-lg text-on-surface-variant">未找到匹配的食谱<br>请尝试其他关键词</p>
+      </div>
+    `;
+    return;
+  }
+
+  const categoryNames = { meat: '荤菜', vegetable: '素菜', soup: '汤品' };
+  const categoryIcons = { meat: 'lunch_dining', vegetable: 'eco', soup: 'soup_kitchen' };
+  const categoryColors = { meat: 'bg-[#c0392b]', vegetable: 'bg-[#27ae60]', soup: 'bg-[#e67e22]' };
+
+  list.innerHTML = `
+    <div class="mb-4 text-on-surface-variant font-body-md">找到 ${filtered.length} 道食谱</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      ${filtered.map((r, i) => `
+        <article class="recipe-card-hover bg-surface-container-lowest rounded-xl border border-secondary-container overflow-hidden flex flex-col fade-in" style="animation-delay: ${i * 0.02}s">
+          <div class="p-4 flex flex-col flex-grow">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-8 h-8 rounded-full ${categoryColors[r.category]} flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-white text-[16px]">${categoryIcons[r.category]}</span>
+              </div>
+              <h3 class="font-body-md text-body-md font-semibold text-on-surface flex-grow">${r.name}</h3>
+              <span class="px-2 py-0.5 rounded-full text-xs font-label-md ${r.category === 'meat' ? 'text-[#c0392b] bg-[#fde8e8]' : r.category === 'vegetable' ? 'text-[#27ae60] bg-[#e8f5e9]' : 'text-[#e67e22] bg-[#fff3e0]'}">${categoryNames[r.category]}</span>
+            </div>
+
+            <div class="mb-3">
+              <div class="font-label-md text-label-md text-on-surface-variant mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">list</span>
+                食材
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${r.ingredients.map(ing => `
+                  <span class="px-2 py-0.5 rounded text-xs font-medium bg-accent-light text-accent">${ing}</span>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="mt-auto">
+              <div class="font-label-md text-label-md text-on-surface-variant mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">menu_book</span>
+                做法
+              </div>
+              <p class="font-body-md text-body-md text-[#5d4e37] leading-relaxed bg-[#fafaf8] rounded-lg p-3 text-sm">${r.steps}</p>
+            </div>
+          </div>
+        </article>
+      `).join('')}
+    </div>
+  `;
+}
+
+function setFilter(type, el) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-tag').forEach(t => {
+    t.classList.remove('bg-accent', 'text-white', 'border-accent');
+    t.classList.add('bg-surface-container-lowest', 'border-secondary-container');
+  });
+  el.classList.remove('bg-surface-container-lowest', 'border-secondary-container');
+  el.classList.add('bg-accent', 'text-white', 'border-accent');
+  if (currentRecipes.length > 0) {
+    renderRecipes(currentRecipes);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function generateMenu() {
+  const btn = document.getElementById('genBtn');
+  const btnIcon = document.getElementById('btn-icon');
+  const btnText = document.getElementById('btn-text');
+
+  btn.classList.add('shake');
+  setTimeout(() => btn.classList.remove('shake'), 500);
+
+  // Loading state
+  btnIcon.innerHTML = '';
+  btnIcon.classList.add('loading-spinner');
+  btnText.textContent = '生成中...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const meats = recipes.filter(r => r.category === 'meat');
+    const vegs = recipes.filter(r => r.category === 'vegetable');
+    const soups = recipes.filter(r => r.category === 'soup');
+
+    const shuffledMeats = shuffle(meats);
+    const shuffledVegs = shuffle(vegs);
+    const shuffledSoups = shuffle(soups);
+
+    const selected = [];
+    selected.push(...shuffledMeats.slice(0, 5));
+    selected.push(...shuffledVegs.slice(0, 5));
+    selected.push(...shuffledSoups.slice(0, 5));
+
+    currentRecipes = shuffle(selected);
+    currentFilter = 'all';
+
+    document.querySelectorAll('.filter-tag').forEach(t => {
+      t.classList.remove('bg-accent', 'text-white', 'border-accent');
+      t.classList.add('bg-surface-container-lowest', 'border-secondary-container');
+    });
+    document.querySelector('.filter-tag').classList.remove('bg-surface-container-lowest', 'border-secondary-container');
+    document.querySelector('.filter-tag').classList.add('bg-accent', 'text-white', 'border-accent');
+
+    // Restore button
+    btnIcon.classList.remove('loading-spinner');
+    btnIcon.textContent = 'restaurant';
+    btnText.textContent = '晓珊今天吃什么';
+    btn.disabled = false;
+
+    renderRecipes(currentRecipes);
+  }, 800);
+}
+
+function renderRecipes(list) {
+  const area = document.getElementById('resultArea');
+  const filtered = currentFilter === 'all' ? list : list.filter(r => r.category === currentFilter);
+
+  if (filtered.length === 0) {
+    area.innerHTML = `
+      <div class="text-center py-20">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-secondary-container rounded-full mb-6">
+          <span class="material-symbols-outlined text-[48px] text-secondary">search_off</span>
+        </div>
+        <p class="font-body-lg text-body-lg text-on-surface-variant">该分类暂无菜品</p>
+      </div>
+    `;
+    return;
+  }
+
+  const categoryNames = { meat: '荤菜', vegetable: '素菜', soup: '汤品' };
+  const categoryIcons = { meat: 'lunch_dining', vegetable: 'eco', soup: 'soup_kitchen' };
+  const categoryColors = { meat: 'bg-[#c0392b]', vegetable: 'bg-[#27ae60]', soup: 'bg-[#e67e22]' };
+
+  area.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+      ${filtered.map((r, i) => `
+        <article class="recipe-card-hover bg-surface-container-lowest rounded-[1.5rem] border border-secondary-container overflow-hidden flex flex-col fade-in" style="animation-delay: ${i * 0.05}s">
+          <div class="p-6 flex flex-col flex-grow">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-full ${categoryColors[r.category]} flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-white text-[20px]">${categoryIcons[r.category]}</span>
+              </div>
+              <h3 class="font-headline-md text-headline-md text-on-surface flex-grow">${r.name}</h3>
+              <span class="px-3 py-1 rounded-full text-xs font-label-md text-label-md ${categoryColors[r.category]} bg-opacity-10 ${r.category === 'meat' ? 'text-[#c0392b] bg-[#fde8e8]' : r.category === 'vegetable' ? 'text-[#27ae60] bg-[#e8f5e9]' : 'text-[#e67e22] bg-[#fff3e0]'}">${categoryNames[r.category]}</span>
+            </div>
+
+            <div class="mb-4">
+              <div class="font-label-md text-label-md text-on-surface-variant mb-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">list</span>
+                食材
+              </div>
+              <div class="flex flex-wrap gap-2">
+                ${r.ingredients.map(ing => `
+                  <span class="px-3 py-1 rounded-lg text-xs font-medium bg-accent-light text-accent">${ing}</span>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="mt-auto">
+              <div class="font-label-md text-label-md text-on-surface-variant mb-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">menu_book</span>
+                做法
+              </div>
+              <p class="font-body-md text-body-md text-[#5d4e37] leading-relaxed bg-[#fafaf8] rounded-xl p-4">${r.steps}</p>
+            </div>
+          </div>
+        </article>
+      `).join('')}
+    </div>
+  `;
+
+  window.scrollTo({ top: document.getElementById('filters').offsetTop - 100, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
